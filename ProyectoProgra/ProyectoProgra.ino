@@ -81,7 +81,11 @@ void setup() {
   Serial.println("WiFi connected");
 
   Serial.print("Camera Ready! Use 'http://");
-  Serial.print(WiFi.localIP());
+  Serial.print(websocket_server_host);
+  Serial.print(":");
+  Serial.print(websocket_server_port);
+  Serial.print("/client");
+
   Serial.println("' to connect");
 
   while(!client.connect(websocket_server_host, websocket_server_port, "/")){

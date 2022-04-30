@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <title>Client</title>
 </head>
@@ -7,12 +8,7 @@
     <img src="">
     <script>
         const img = document.querySelector('img');
-
-        const WS_HOST = '192.168.1.16'; // En una terminal de window ejectuar ipconfig
-        const WS_PORT = '8888'
-
-        const WS_URL = `ws:///${WS_HOST}:${WS_PORT}/`;
-        // const WS_URL = 'ws:///127.0.0.1:3000';
+        const WS_URL = 'ws:///34.125.169.64:65080';
         const ws = new WebSocket(WS_URL);
         let urlObject;
         ws.onopen = () => console.log(`Connected to ${WS_URL}`);
