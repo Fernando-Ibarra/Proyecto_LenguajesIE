@@ -1,4 +1,5 @@
 require('dotenv').config();
+const cors = require('cors')
 const path = require('path');
 const express = require('express');
 const WebSocket = require('ws');
@@ -25,6 +26,9 @@ wsServer.on('connection', (ws, req) => {
     });
 });
 
+wsServer.on('error', (error) => {
+    console.log(error);
+  })
 app.get('/client', (req, res) => res.sendFile(path.resolve(__dirname, './index.html')));
 app.listen(HTTP_PORT, () => console.log(`HTTP server en el puerto ${HTTP_PORT}`));
 

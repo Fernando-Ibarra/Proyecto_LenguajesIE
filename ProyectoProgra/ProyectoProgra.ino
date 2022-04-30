@@ -18,8 +18,8 @@
 
 const char* ssid = "TIGO-F53D";
 const char* password = "4D9697509107";
-const char* websocket_server_host = "192.168.1.16";
-const uint16_t websocket_server_port = 8888;
+const char* websocket_server_host = "34.125.169.64";
+const uint16_t websocket_server_port = 65080;
 
 using namespace websockets;
 WebsocketsClient client;
