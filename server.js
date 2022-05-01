@@ -25,7 +25,7 @@ wsServer.on('connection', (ws, req) => {
                     for (var i = 0; i < array.length; ++i) {
                         array[i] = i / 2;
                     }
-                    client.send(array);
+                    client.send(array, { binary: true });
                 } else {
                     client.send(data);
                 }
