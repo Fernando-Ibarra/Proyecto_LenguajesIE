@@ -107,11 +107,10 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("Websocket Connected!");
-
-    // Setup Callbacks
-    client.onMessage(onMessageCallback);
-    client.onEvent(onEventsCallback);
-
+  client.onMessage([&](WebsocketsMessage message){
+        Serial.print("Got Message: ");
+        Serial.println(message.data());
+    });
 }
 
 void loop() {
