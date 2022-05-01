@@ -1,5 +1,4 @@
 <html>
-
 <head>
     <title>Client</title>
 </head>
@@ -10,19 +9,17 @@
     <script>
         const img = document.querySelector('img');
         const btnAlimentar = document.querySelector('#btnAlimentar');
-
+        
         // Servidor de Google Cloud
         // const WS_URL = 'ws:///34.125.169.64:65080';
 
         // Para local -> revisar con ipconfig
-        const WS_URL = 'ws:///192.168.1.2:65080';
+        const WS_URL = 'ws:///192.168.1.4:65080';
 
         const ws = new WebSocket(WS_URL);
         let urlObject;
         ws.onopen = () => console.log(`Connected to ${WS_URL}`);
         ws.onmessage = message => {
-
-            console.log('info recibida' + message);
 
             const arrayBuffer = message.data;
             if (urlObject) {
@@ -31,13 +28,10 @@
             urlObject = URL.createObjectURL(new Blob([arrayBuffer]));
             img.src = urlObject;
         }
-
         btnAlimentar.addEventListener('click', () => {
             console.log('Boton en cliente presionado');
             ws.send("1")
-
         })
-
     </script>
 </body>
 
