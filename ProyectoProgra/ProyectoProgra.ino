@@ -101,10 +101,6 @@ void setup() {
   Serial.print("Camera Ready! Use 'http://");
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
-
-
-  // Setup Callbacks
-  
   client.onMessage(onMessageCallback);
   client.onEvent(onEventsCallback);
   while(!client.connect(websocket_server_host, websocket_server_port, "/")){
