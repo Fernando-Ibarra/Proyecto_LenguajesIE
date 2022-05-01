@@ -112,10 +112,6 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("Websocket Connected!");
-  client.onMessage([&](WebsocketsMessage message){
-        Serial.print("Got Message: ");
-        Serial.println(message.data());
-    });
 }
 
 void loop() {
