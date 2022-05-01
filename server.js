@@ -27,9 +27,9 @@ wsServer.on('connection', (ws, req) => {
                 if (data.length == 1) {
                     //boton de alimentar presionado
                     console.log("mandar mensaje a esp32")
-                    ws.send('1')
+                    client.send('1')
                 } else {
-                    ws.send(data);
+                    client.send(data);
                 }
             }
         });

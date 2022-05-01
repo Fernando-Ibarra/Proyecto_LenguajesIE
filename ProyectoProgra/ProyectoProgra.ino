@@ -25,12 +25,21 @@ WebsocketsClient client;
 
 
 void onMessageCallback(WebsocketsMessage message) {
-
     Serial.print("Got Message: ");
     Serial.println(message.data());
 
-    // Aqui iria el cod para activar el servo, ver si se puede usar delay()
+}
 
+void onEventsCallback(WebsocketsEvent event, String data) {
+    if(event == WebsocketsEvent::ConnectionOpened) {
+        Serial.println("Connnection Opened");
+    } else if(event == WebsocketsEvent::ConnectionClosed) {
+        Serial.println("Connnection Closed");
+    } else if(event == WebsocketsEvent::GotPing) {
+        Serial.println("Got a Ping!");
+    } else if(event == WebsocketsEvent::GotPong) {
+        Serial.println("Got a Pong!");
+    }
 }
 
 void setup() {
@@ -99,8 +108,9 @@ void setup() {
   }
   Serial.println("Websocket Connected!");
 
-  // Message callback
-  client.onMessage(onMessageCallback);
+    // Setup Callbacks
+    client.onMessage(onMessageCallback);
+    client.onEvent(onEventsCallback);
 
 }
 
