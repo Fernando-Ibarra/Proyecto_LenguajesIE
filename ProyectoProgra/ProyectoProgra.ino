@@ -18,11 +18,21 @@
 
 const char* ssid = "TIGO-F53D";
 const char* password = "4D9697509107";
-const char* websocket_server_host = "34.125.169.64";
-const uint16_t websocket_server_port = 65080;
+const char* websocket_server_host = "192.168.1.16";
+const uint16_t websocket_server_port = 8888;
 
 using namespace websockets;
 WebsocketsClient client;
+
+
+void onMessageCallback(WebsocketsMessage message) {
+
+    Serial.print("Got Message: ");
+    Serial.println(message.data());
+
+    // Aqui iria el cod para activar el servo, ver si se puede usar delay()
+
+}
 
 void setup() {
   Serial.begin(115200);
@@ -81,11 +91,7 @@ void setup() {
   Serial.println("WiFi connected");
 
   Serial.print("Camera Ready! Use 'http://");
-  Serial.print(websocket_server_host);
-  Serial.print(":");
-  Serial.print(websocket_server_port);
-  Serial.print("/client");
-
+  Serial.print(WiFi.localIP());
   Serial.println("' to connect");
 
   while(!client.connect(websocket_server_host, websocket_server_port, "/")){
@@ -93,6 +99,10 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("Websocket Connected!");
+
+  // Message callback
+  client.onMessage(onMessageCallback);
+
 }
 
 void loop() {
