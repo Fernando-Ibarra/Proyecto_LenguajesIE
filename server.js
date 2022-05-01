@@ -16,18 +16,16 @@ wsServer.on('connection', (ws, req) => {
     connectedClients.push(ws);
 
     ws.on('message', data => {
-
-        console.log("Data recibida : ")
-        console.log(data)
-
         wsServer.clients.forEach(function each(client) {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
-
-                console.log("longitud " + data.length)
                 if (data.length == 1) {
                     //boton de alimentar presionado
                     console.log("mandar mensaje a esp32")
-                    client.send('1')
+                    const array = new Float32Array(5);
+                    for (var i = 0; i < array.length; ++i) {
+                        array[i] = i / 2;
+                    }
+                    client.send(array);
                 } else {
                     client.send(data);
                 }
