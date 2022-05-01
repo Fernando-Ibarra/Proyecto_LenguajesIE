@@ -4,7 +4,9 @@ const WebSocket = require('ws');
 const app = express();
 
 const WS_PORT = 65080;
-const HTTP_PORT = 80;
+const HTTP_PORT = 8080; //Para local
+// const HTTP_PORT = 80; // Para remoto
+
 
 const wsServer = new WebSocket.Server({ port: WS_PORT }, () => console.log(`WS Server is listening at ${WS_PORT}`));
 
@@ -14,13 +16,24 @@ wsServer.on('connection', (ws, req) => {
     connectedClients.push(ws);
 
     ws.on('message', data => {
-        connectedClients.forEach((ws, i) => {
-            if (ws.readyState === ws.OPEN) {
-                ws.send(data);
-            } else {
-                connectedClients.splice(i, 1);
+
+        console.log("Data recibida : ")
+        console.log(data)
+
+        wsServer.clients.forEach(function each(client) {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+
+                console.log("longitud " + data.length)
+                if (data.length == 1) {
+                    //boton de alimentar presionado
+                    console.log("mandar mensaje a esp32")
+                    ws.send('1')
+                } else {
+                    ws.send(data);
+                }
             }
-        })
+        });
+
     });
 });
 
