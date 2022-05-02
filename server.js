@@ -9,7 +9,8 @@ const HTTP_PORT = 8080; //Para local
 
 // Email
 // Para remoto 
-const client_url = "34.125.169.64:80/client"
+const client_url_remoto = "34.125.169.64:80/client"
+const client_url_local = "http://192.168.1.4:8080/client"
 const transporter = require('./mailer');
 
 const wsServer = new WebSocket.Server({ port: WS_PORT }, () => console.log(`WS Server is listening at ${WS_PORT}`));
@@ -35,7 +36,9 @@ wsServer.on('connection', (ws, req) => {
                         text: "Movimiento detectado en alimentador", // plain text body
                         html: `
                             <b>Movimiento detectado en el alimentador</b>
-                            <p>Puedes monitorear el estado <a href="${client_url}">Aqui</a></p>
+                            <p>Puedes monitorear el estado </p>
+                            <a href="${client_url_local}">Aqui forma local</a>
+                            <a href="http://${client_url_remoto}">Aqui forma remota</a>
                         `
                     });
                 } else {
