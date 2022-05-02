@@ -5,6 +5,7 @@
 
 #define SERVO_1 14
 #define SERVO_2 15
+#define MOTION_SENSOR_PIN  13
 #define SERVO_STEP 1
 #define CAMERA_MODEL_AI_THINKER
 #include "camera_pins.h"
@@ -19,19 +20,21 @@ Servo servo1;
 Servo servo2;
 int servo1Pos = 0;
 int servo2Pos = 0;
+int motionStateCurrent  = LOW;
+int motionStatePrevious = LOW;
 
 using namespace websockets;
 WebsocketsClient client;
 bool movimiento = false;
 
 void onMessageCallback(WebsocketsMessage message) {
-    Serial.print("MOVIMIENDO SERVO");
     movimiento = true;
 }
 
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
+  pinMode(MOTION_SENSOR_PIN, INPUT); // set ESP32 pin to input mode
 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -102,7 +105,11 @@ void loop() {
 
   // poll
   client.poll();
-  if(movimiento ==true){
+ motionStatePrevious = motionStateCurrent;
+  motionStateCurrent  = digitalRead(MOTION_SENSOR_PIN); 
+  if(movimiento == true && motionStatePrevious == LOW && motionStateCurrent == HIGH){
+    Serial.println("Motion detected!");
+    Serial.println("MOVIMIENDO SERVO");
     servo1.setPeriodHertz(50);
     servo2.setPeriodHertz(50); 
     servoN1.attach(2, 1000, 2000);
@@ -115,6 +122,8 @@ void loop() {
     servo1.write(servo1Pos);
     servo2.write(servo2Pos);
     movimiento = false;
+    motionStatePrevious = HIGH;
+    motionStateCurrent = LOW;
   }else{
   camera_fb_t *fb = esp_camera_fb_get();
   if(!fb){
