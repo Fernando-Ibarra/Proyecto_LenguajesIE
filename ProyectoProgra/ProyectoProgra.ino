@@ -114,33 +114,30 @@ void loop()
   motionStatePrevious = motionStateCurrent;
   motionStateCurrent = digitalRead(MOTION_SENSOR_PIN);
 
-  // Asi estaba antes
-  // if(movimiento == true && motionStatePrevious == LOW && motionStateCurrent == HIGH){
-
   // Para mandar mensaje
   if (motionStatePrevious == LOW && motionStateCurrent == HIGH)
   {
-    client.send('email');
+    Serial.println("Motion detected!");
+    client.send("email");
   }
 
-  if (movimiento == true && motionStatePrevious == LOW && motionStateCurrent == HIGH)
+  if (movimiento == true)
   {
-    Serial.println("Motion detected!");
     Serial.println("MOVIMIENDO SERVO");
     servo1.setPeriodHertz(50);
-    servo2.setPeriodHertz(50);
+    servo2.setPeriodHertz(50); 
     servoN1.attach(2, 1000, 2000);
     servoN2.attach(13, 1000, 2000);
-    servo1.attach(SERVO_1, 1000, 2000);
+    servo1.attach(SERVO_1, 1000, 2000); 
     servo2.attach(SERVO_2, 1000, 2000);
-    servo1.write(90);
-    servo2.write(90);
-    delay(1000);
-    servo1.write(servo1Pos);
-    servo2.write(servo2Pos);
+    servo2.write(180);
+    delay(500);
+    servo1.write(180);
+    delay(2000);
+    servo1.write(servo2Pos);
+    delay(500);
+    servo2.write(servo1Pos);
     movimiento = false;
-    motionStatePrevious = HIGH;
-    motionStateCurrent = LOW;
   }
   else
   {
