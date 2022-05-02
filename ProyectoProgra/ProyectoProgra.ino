@@ -101,8 +101,12 @@ void setup() {
   Serial.print("Camera Ready! Use 'http://");
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
+
+
   client.onMessage(onMessageCallback);
   client.onEvent(onEventsCallback);
+
+
   while(!client.connect(websocket_server_host, websocket_server_port, "/")){
     delay(500);
     Serial.print(".");
@@ -111,6 +115,9 @@ void setup() {
 }
 
 void loop() {
+
+  client.poll();
+
   camera_fb_t *fb = esp_camera_fb_get();
   if(!fb){
     Serial.println("Camera capture failed");
