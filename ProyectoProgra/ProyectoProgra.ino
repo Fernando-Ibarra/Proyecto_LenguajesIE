@@ -108,9 +108,9 @@ void setup()
 
 void loop()
 {
-
   // poll
   client.poll();
+  camera_fb_t *fb = esp_camera_fb_get();
   motionStatePrevious = motionStateCurrent;
   motionStateCurrent = digitalRead(MOTION_SENSOR_PIN);
 
@@ -123,6 +123,7 @@ void loop()
 
   if (movimiento == true)
   {
+    esp_camera_fb_return(fb);
     Serial.println("MOVIMIENDO SERVO");
     servo1.setPeriodHertz(50);
     servo2.setPeriodHertz(50); 
@@ -137,11 +138,12 @@ void loop()
     servo1.write(servo2Pos);
     delay(500);
     servo2.write(servo1Pos);
+    esp_camera_fb_return(fb);
     movimiento = false;
   }
   else
   {
-    camera_fb_t *fb = esp_camera_fb_get();
+    
     if (!fb)
     {
       Serial.println("Camera capture failed");
@@ -158,4 +160,5 @@ void loop()
     client.sendBinary((const char *)fb->buf, fb->len);
     esp_camera_fb_return(fb);
   }
+  
 }
