@@ -41,6 +41,7 @@ wsServer.on('connection', (ws, req) => {
                             <a href="http://${client_url_remoto}">Aqui forma remota</a>
                         `
                     });
+                    client.send(51);
                 } else {
                     client.send(data);
                 }
