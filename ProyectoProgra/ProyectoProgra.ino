@@ -1,51 +1,37 @@
+#include <ESP32Servo.h>
 #include "esp_camera.h"
 #include <WiFi.h>
 #include <ArduinoWebsockets.h>
 
-//
-// WARNING!!! Make sure that you have either selected ESP32 Wrover Module,
-//            or another board which has PSRAM enabled
-//
-
-// Select camera model
-//#define CAMERA_MODEL_WROVER_KIT
-//#define CAMERA_MODEL_ESP_EYE
-//#define CAMERA_MODEL_M5STACK_PSRAM
-//#define CAMERA_MODEL_M5STACK_WIDE
+#define SERVO_1 14
+#define SERVO_2 15
+#define SERVO_STEP 1
 #define CAMERA_MODEL_AI_THINKER
-
 #include "camera_pins.h"
 
 const char* ssid = "TIGO-F53D";
 const char* password = "4D9697509107";
 const char* websocket_server_host = "192.168.1.4";
 const uint16_t websocket_server_port = 65080;
+Servo servoN1;
+Servo servoN2;
+Servo servo1;
+Servo servo2;
+int servo1Pos = 0;
+int servo2Pos = 0;
+
 using namespace websockets;
 WebsocketsClient client;
-
+bool movimiento = false;
 
 void onMessageCallback(WebsocketsMessage message) {
-    Serial.print("Got Message: ");
-    Serial.println(message.data());
-
-}
-
-void onEventsCallback(WebsocketsEvent event, String data) {
-    if(event == WebsocketsEvent::ConnectionOpened) {
-        Serial.println("Connnection Opened");
-    } else if(event == WebsocketsEvent::ConnectionClosed) {
-        Serial.println("Connnection Closed");
-    } else if(event == WebsocketsEvent::GotPing) {
-        Serial.println("Got a Ping!");
-    } else if(event == WebsocketsEvent::GotPong) {
-        Serial.println("Got a Pong!");
-    }
+    Serial.print("MOVIMIENDO SERVO");
+    movimiento = true;
 }
 
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
-  Serial.println();
 
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
@@ -104,8 +90,6 @@ void setup() {
 
   // Setup Callbacks
     client.onMessage(onMessageCallback);
-    client.onEvent(onEventsCallback);
-
 
   while(!client.connect(websocket_server_host, websocket_server_port, "/")){
     delay(500);
@@ -118,7 +102,20 @@ void loop() {
 
   // poll
   client.poll();
-
+  if(movimiento ==true){
+    servo1.setPeriodHertz(50);
+    servo2.setPeriodHertz(50); 
+    servoN1.attach(2, 1000, 2000);
+    servoN2.attach(13, 1000, 2000);
+    servo1.attach(SERVO_1, 1000, 2000); 
+    servo2.attach(SERVO_2, 1000, 2000);
+    servo1.write(90);
+    servo2.write(90);
+    delay(1000);
+    servo1.write(servo1Pos);
+    servo2.write(servo2Pos);
+    movimiento = false;
+  }else{
   camera_fb_t *fb = esp_camera_fb_get();
   if(!fb){
     Serial.println("Camera capture failed");
@@ -132,5 +129,6 @@ void loop() {
   }
 
   client.sendBinary((const char*) fb->buf, fb->len);
-  esp_camera_fb_return(fb);
+  esp_camera_fb_return(fb);   
+  }
 }
