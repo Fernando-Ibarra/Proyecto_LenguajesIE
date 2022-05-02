@@ -1,0 +1,56 @@
+*{
+    top: 0;
+    margin: 0;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+}
+
+header{
+    background-color: #515A7A;
+}
+
+header p {
+    text-align: center;
+    color: white;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+}
+
+.btn{
+    background: #12c2e9; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #12c2e9, #c471ed, #f64f59); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  color: white;
+  padding: 2rem;
+  border-radius: 2rem;
+  font-size: 20px;
+
+}
+
+
+footer{
+    display: flex;
+    height: 20vh;    
+}
+
+.usac{
+    max-height: 20vh;
+}
+
+footer p{
+    color: black;
+    font-size: 16px;
+}
+
+footer p span{
+    font-size: 8px;
+    color: gray;
+}
+
