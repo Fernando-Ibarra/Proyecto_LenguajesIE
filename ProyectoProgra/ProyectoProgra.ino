@@ -116,6 +116,7 @@ void setup() {
 
 void loop() {
 
+  // poll
   client.poll();
 
   camera_fb_t *fb = esp_camera_fb_get();
