@@ -25,12 +25,8 @@ wsServer.on('connection', (ws, req) => {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
                 if (data.length == 1) {
                     //boton de alimentar presionado
-                    console.log("mandar mensaje a esp32")
-                    const array = new Float32Array(5);
-                    for (var i = 0; i < array.length; ++i) {
-                        array[i] = i / 2;
-                    }
-                    client.send(array, { binary: true });
+                    console.log("mandar mensaje a esp32");
+                    client.send(1);
                 } else if (data.length == 5) {
                     // TODO: enviar Email
                     await transporter.sendMail({
