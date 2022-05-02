@@ -10,8 +10,7 @@ const HTTP_PORT = 8080; //Para local
 // Email
 // Para remoto 
 const client_url = "34.125.169.64:80/client"
-import { transporter } from './mailer'
-
+const transporter = require('./mailer');
 
 const wsServer = new WebSocket.Server({ port: WS_PORT }, () => console.log(`WS Server is listening at ${WS_PORT}`));
 
@@ -21,7 +20,7 @@ wsServer.on('connection', (ws, req) => {
     connectedClients.push(ws);
 
     ws.on('message', data => {
-        wsServer.clients.forEach(function each(client) {
+        wsServer.clients.forEach(async function each(client) {
             if (client !== ws && client.readyState === WebSocket.OPEN) {
                 if (data.length == 1) {
                     //boton de alimentar presionado
@@ -30,9 +29,9 @@ wsServer.on('connection', (ws, req) => {
                 } else if (data.length == 5) {
                     // TODO: enviar Email
                     await transporter.sendMail({
-                        from: '"Nuevo movimiento detectado" <correo@gmail.com>', // sender address
-                        to: "correo2@example.com", // list of receivers
-                        subject: "Hello ✔", // Subject line
+                        from: '"Nuevo movimiento detectado" <dispensadormascota2022@gmail.com>', // sender address
+                        to: "fi94457@gmail.com", // list of receivers
+                        subject: "Hey !!! - Notificacion ChuchoEat ", // Subject line
                         text: "Movimiento detectado en alimentador", // plain text body
                         html: `
                             <b>Movimiento detectado en el alimentador</b>
