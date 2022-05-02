@@ -1,15 +1,126 @@
 <html>
+
 <head>
     <title>Client</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            top: 0;
+            margin: 0;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #515A7A;
+            min-height: 10vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            text-align: center;
+            color: white;
+        }
+
+        .video {
+            min-height: 50vh;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn {
+            margin-top: 1rem;
+            background: #12c2e9;
+            /* fallback for old browsers */
+            background: -webkit-linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to right, #12c2e9, #c471ed, #f64f59);
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+            color: white;
+            padding: 1rem;
+            border-radius: 2rem;
+            font-size: 20px;
+            border: none;
+
+        }
+
+
+        footer {
+            margin-top: 2rem;
+            display: flex;
+            height: 20vh;
+            justify-content: space-around;
+            align-self: center;
+        }
+
+        .usac {
+            max-width: 250px;
+            max-height: 65px;
+        }
+
+        footer p {
+            color: black;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        footer p span {
+            font-size: 8px;
+            color: gray;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50vw;
+        }
+    </style>
+
 </head>
 
 <body>
-    <img src="">
-    <button id="btnAlimentar">Alimentar</button>
+
+    <header>
+        <h1 class="title">ChuchoEat</h1>
+    </header>
+    <main>
+        <img class="video" id="video-stream" src="" alt="Video Stream">
+        <button class="btn" id="btnAlimentar">Alimentar</button>
+    </main>
+    <footer>
+        <div class="footer-container">
+            <img class="usac" src="https://portal.ingenieria.usac.edu.gt/images/logo_facultad/logo_azul.png" alt="usac">
+        </div>
+        <div class="footer-container">
+            <p>Desarrollado por: Team Pibe <span class="easter">Visca Barca</span></p>
+        </div>
+    </footer>
+
+
+    <!-- Web Socket Client -->
+
     <script>
-        const img = document.querySelector('img');
+        const img = document.querySelector('#video-stream');
         const btnAlimentar = document.querySelector('#btnAlimentar');
-        
+
         // Servidor de Google Cloud
         // const WS_URL = 'ws:///34.125.169.64:65080';
 
