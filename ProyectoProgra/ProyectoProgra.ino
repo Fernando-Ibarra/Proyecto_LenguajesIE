@@ -102,11 +102,6 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
 
-
-  client.onMessage(onMessageCallback);
-  client.onEvent(onEventsCallback);
-
-
   while(!client.connect(websocket_server_host, websocket_server_port, "/")){
     delay(500);
     Serial.print(".");
