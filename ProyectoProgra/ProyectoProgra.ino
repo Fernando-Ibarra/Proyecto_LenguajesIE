@@ -5,14 +5,14 @@
 
 #define SERVO_1 14
 #define SERVO_2 15
-#define MOTION_SENSOR_PIN  13
+#define MOTION_SENSOR_PIN 13
 #define SERVO_STEP 1
 #define CAMERA_MODEL_AI_THINKER
 #include "camera_pins.h"
 
-const char* ssid = "TIGO-F53D";
-const char* password = "4D9697509107";
-const char* websocket_server_host = "192.168.1.4";
+const char *ssid = "TIGO-F53D";
+const char *password = "4D9697509107";
+const char *websocket_server_host = "192.168.1.4";
 const uint16_t websocket_server_port = 65080;
 Servo servoN1;
 Servo servoN2;
@@ -20,18 +20,20 @@ Servo servo1;
 Servo servo2;
 int servo1Pos = 0;
 int servo2Pos = 0;
-int motionStateCurrent  = LOW;
+int motionStateCurrent = LOW;
 int motionStatePrevious = LOW;
 
 using namespace websockets;
 WebsocketsClient client;
 bool movimiento = false;
 
-void onMessageCallback(WebsocketsMessage message) {
-    movimiento = true;
+void onMessageCallback(WebsocketsMessage message)
+{
+  movimiento = true;
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   pinMode(MOTION_SENSOR_PIN, INPUT); // set ESP32 pin to input mode
@@ -57,30 +59,32 @@ void setup() {
   config.pin_reset = RESET_GPIO_NUM;
   config.xclk_freq_hz = 10000000;
   config.pixel_format = PIXFORMAT_JPEG;
-  //init with high specs to pre-allocate larger buffers
-  if(psramFound()){
+  // init with high specs to pre-allocate larger buffers
+  if (psramFound())
+  {
     config.frame_size = FRAMESIZE_VGA;
     config.jpeg_quality = 40;
     config.fb_count = 2;
-  } else {
+  }
+  else
+  {
     config.frame_size = FRAMESIZE_SVGA;
     config.jpeg_quality = 12;
     config.fb_count = 1;
   }
 
-
   // camera init
   esp_err_t err = esp_camera_init(&config);
-  if (err != ESP_OK) {
+  if (err != ESP_OK)
+  {
     Serial.printf("Camera init failed with error 0x%x", err);
     return;
   }
 
- 
-
   WiFi.begin(ssid, password);
 
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
@@ -92,29 +96,42 @@ void setup() {
   Serial.println("' to connect");
 
   // Setup Callbacks
-    client.onMessage(onMessageCallback);
+  client.onMessage(onMessageCallback);
 
-  while(!client.connect(websocket_server_host, websocket_server_port, "/")){
+  while (!client.connect(websocket_server_host, websocket_server_port, "/"))
+  {
     delay(500);
     Serial.print(".");
   }
   Serial.println("Websocket Connected!");
 }
 
-void loop() {
+void loop()
+{
 
   // poll
   client.poll();
- motionStatePrevious = motionStateCurrent;
-  motionStateCurrent  = digitalRead(MOTION_SENSOR_PIN); 
-  if(movimiento == true && motionStatePrevious == LOW && motionStateCurrent == HIGH){
+  motionStatePrevious = motionStateCurrent;
+  motionStateCurrent = digitalRead(MOTION_SENSOR_PIN);
+
+  // Asi estaba antes
+  // if(movimiento == true && motionStatePrevious == LOW && motionStateCurrent == HIGH){
+
+  // Para mandar mensaje
+  if (motionStatePrevious == LOW && motionStateCurrent == HIGH)
+  {
+    client.send('email');
+  }
+
+  if (movimiento == true && motionStatePrevious == LOW && motionStateCurrent == HIGH)
+  {
     Serial.println("Motion detected!");
     Serial.println("MOVIMIENDO SERVO");
     servo1.setPeriodHertz(50);
-    servo2.setPeriodHertz(50); 
+    servo2.setPeriodHertz(50);
     servoN1.attach(2, 1000, 2000);
     servoN2.attach(13, 1000, 2000);
-    servo1.attach(SERVO_1, 1000, 2000); 
+    servo1.attach(SERVO_1, 1000, 2000);
     servo2.attach(SERVO_2, 1000, 2000);
     servo1.write(90);
     servo2.write(90);
@@ -124,20 +141,24 @@ void loop() {
     movimiento = false;
     motionStatePrevious = HIGH;
     motionStateCurrent = LOW;
-  }else{
-  camera_fb_t *fb = esp_camera_fb_get();
-  if(!fb){
-    Serial.println("Camera capture failed");
+  }
+  else
+  {
+    camera_fb_t *fb = esp_camera_fb_get();
+    if (!fb)
+    {
+      Serial.println("Camera capture failed");
+      esp_camera_fb_return(fb);
+      return;
+    }
+
+    if (fb->format != PIXFORMAT_JPEG)
+    {
+      Serial.println("Non-JPEG data not implemented");
+      return;
+    }
+
+    client.sendBinary((const char *)fb->buf, fb->len);
     esp_camera_fb_return(fb);
-    return;
-  }
-
-  if(fb->format != PIXFORMAT_JPEG){
-    Serial.println("Non-JPEG data not implemented");
-    return;
-  }
-
-  client.sendBinary((const char*) fb->buf, fb->len);
-  esp_camera_fb_return(fb);   
   }
 }
