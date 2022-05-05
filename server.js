@@ -1,34 +1,47 @@
+
+// Importaciones
+
 const path = require('path');
 const express = require('express');
 const WebSocket = require('ws');
 const app = express();
-
-const WS_PORT = 65080;
-const HTTP_PORT = 8080; //Para local
-// const HTTP_PORT = 80; // Para remoto
-
-// Email
-// Para remoto 
-const client_url_remoto = "34.125.169.64:80/client"
-const client_url_local = "http://192.168.1.4:8080/client"
 const transporter = require('./mailer');
 
+const WS_PORT = 65080;
+const HTTP_PORT = 80;
+// const HTTP_PORT = 8080; //Para local
+
+// URL para el cliente
+const client_url = "34.125.169.64:80/client"
+
+// Inicializando el servidor de webSockets
 const wsServer = new WebSocket.Server({ port: WS_PORT }, () => console.log(`WS Server is listening at ${WS_PORT}`));
 
+// Lista de clientes conectados
 let connectedClients = [];
+
+// Al recibir una conexion
 wsServer.on('connection', (ws, req) => {
+
+    // Lo agrega a la lista de clientes
     console.log('Connected');
     connectedClients.push(ws);
 
+    // Al recibir un mensaje
     ws.on('message', data => {
         wsServer.clients.forEach(async function each(client) {
+            // Retransmite el mensaje para el resto de clientes
+
             if (client !== ws && client.readyState === WebSocket.OPEN) {
+
+
+                //Boton para alimentar presionado
                 if (data.length == 1) {
-                    //boton de alimentar presionado
                     console.log("mandar mensaje a esp32");
                     client.send(1);
                 } else if (data.length == 5) {
-                    // TODO: enviar Email
+
+                    // Envia Email
                     await transporter.sendMail({
                         from: '"Nuevo movimiento detectado" <dispensadormascota2022@gmail.com>', // sender address
                         to: "fi94457@gmail.com", // list of receivers
@@ -36,13 +49,11 @@ wsServer.on('connection', (ws, req) => {
                         text: "Movimiento detectado en alimentador", // plain text body
                         html: `
                             <b>Movimiento detectado en el alimentador</b>
-                            <p>Puedes monitorear el estado </p>
-                            <a href="${client_url_local}">Aqui forma local</a>
-                            <a href="http://${client_url_remoto}">Aqui forma remota</a>
+                            <p>Puedes monitorear el estado <a href="${client_url}">Aqui</a></p>
                         `
                     });
-                    client.send(51);
                 } else {
+                    // Retransmite el video
                     client.send(data);
                 }
             }
@@ -51,5 +62,10 @@ wsServer.on('connection', (ws, req) => {
     });
 });
 
+
+// Endpoints para el cliente web
 app.get('/client', (req, res) => res.sendFile(path.resolve(__dirname, './client.html')));
+app.get('/demo', (req, res) => res.sendFile(path.resolve(__dirname, './demo.html')));
+
+// Inicializando servidor HTTP
 app.listen(HTTP_PORT, () => console.log(`HTTP server listening at ${HTTP_PORT}`));
